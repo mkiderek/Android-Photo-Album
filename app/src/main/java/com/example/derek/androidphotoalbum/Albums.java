@@ -3,11 +3,13 @@ package com.example.derek.androidphotoalbum;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class AlbumPage extends AppCompatActivity {
+public class Albums extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album_page);
+        setContentView(R.layout.activity_albums);
+
+
     }
 }
