@@ -1,0 +1,29 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+>
+
+<item
+    android:id="@+id/empty"
+    android:title="@string/action_options"
+    android:orderInCategory="101"
+    android:showAsAction="always"
+    android:icon="@drawable/ic_action_menu">
+
+    <menu>
+
+        <item android:id="@+id/action_settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:showAsAction="ifRoom"
+            android:title="@string/action_setting" />
+
+        <item android:id="@+id/action_help"
+            android:icon="@android:drawable/ic_menu_help"
+            android:showAsAction="ifRoom"
+            android:title="@string/action_help" />
+
+    </menu>
+
+</item>
+
+</menu>

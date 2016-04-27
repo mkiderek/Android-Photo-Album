@@ -3,5 +3,7 @@
 
     <string name="action_add">Add</string>
     <string name="action_delete">Delete</string>
-
+    <string name="action_setting">Setting</string>
+    <string name="action_options">Options</string>
+    <string name="action_help">Help</string>
 </resources>
