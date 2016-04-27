@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class AddAlbumActivity extends AppCompatActivity {
+public class AlbumsMainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -12,5 +12,9 @@ public class AddAlbumActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_album);
     }
 
+    public boolean onCreateOptionMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.add_delete_menu,menu);
+        return true;
+    }
 
 }
