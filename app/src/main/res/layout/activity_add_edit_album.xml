@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AddPhoto">
+    tools:context=".AddEditAlbum">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -19,57 +19,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/hint_enter_photo_name"
-        android:id="@+id/textView2"
-        android:layout_marginTop="30dp"
+        android:text="@string/hint_enter_album_name"
+        android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="91dp" />
 
     <EditText
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/description"
-        android:hint="@string/hint_enter_photo_name"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/textView2"
+        android:id="@+id/albumName"
+        android:width="200dp"
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:singleLine="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_choose_image"
-        android:id="@+id/button3"
-        android:layout_below="@+id/description"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:onClick="chooseFile" />
-
-    <ImageView
-        android:layout_width="@android:dimen/thumbnail_width"
-        android:layout_height="@android:dimen/thumbnail_height"
-        android:id="@+id/photoPreview"
-        android:layout_below="@+id/button3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_ok"
-        android:id="@+id/button4"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/description"
-        android:layout_marginBottom="10dp"
+        android:text="@string/button_save"
+        android:id="@+id/button"
+        android:layout_alignTop="@+id/button2"
+        android:layout_alignStart="@+id/textView"
+        android:nestedScrollingEnabled="false"
         android:onClick="save" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_cancel"
-        android:id="@+id/button5"
-        android:layout_alignTop="@+id/button4"
-        android:layout_alignEnd="@+id/description"
+        android:id="@+id/button2"
+        android:layout_below="@+id/albumName"
+        android:layout_alignEnd="@+id/albumName"
+        android:layout_marginTop="68dp"
         android:onClick="cancel" />
 
 </RelativeLayout>

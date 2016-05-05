@@ -1,16 +1,20 @@
 package com.example.derek.androidphotoalbum;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -18,31 +22,56 @@ import java.util.NoSuchElementException;
  */
 public class Album implements Serializable, Comparable<Album> {
 
-//    public static final int THUMBNAIL_SIZE = 180;
-
-    static final long serialVersionUID = 18L;
-
-    String albumName;
-    private HashMap<String, Photo> photos;
-
     public static class Photo implements Serializable, Comparable<Photo> {
-        private String photoName;
-        private File imageFile;
-        private transient Bitmap image;
-//        private transient ImageView thumbnail;
 
-        private ArrayList<Tag> tags;
+        public static class Tag implements Serializable {
 
-        private Photo(String photoName, File imageFile) {
-            this.photoName = photoName;
-            this.imageFile = imageFile;
-            try {
-                this.image = BitmapFactory.decodeStream(new FileInputStream(this.imageFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println(e.getMessage());
+            public enum TagType {
+                PERSON, LOCATION;
             }
-            tags = new ArrayList<>();
+
+            static final long serialVersionUID = 20L;
+            private TagType tagType;
+            private String value;
+
+            public Tag(TagType tagType, String value) {
+                this.tagType = tagType;
+                this.value = value;
+            }
+
+            public TagType getTagType() {
+                return this.tagType;
+            }
+
+            public String getValue() {
+                return this.value;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj != null && obj instanceof Tag) {
+                    Tag o = (Tag) obj;
+                    return this.value.equals(o.value) && this.tagType == o.tagType;
+                }
+                return false;
+            }
+
+            public String toString() {
+                return this.tagType.toString() + ":" + this.value;
+            }
+
+        }
+
+        static final long serialVersionUID = 19L;
+        private String photoName;
+        private String imagePath;
+        private List<Tag> tags;
+        transient private Bitmap image;
+
+        private Photo(String photoName, String imagePath) {
+            this.photoName = photoName;
+            this.imagePath = imagePath;
+            this.tags = new ArrayList<>();
         }
 
         public void addTag(Tag tag) {
@@ -57,29 +86,56 @@ public class Album implements Serializable, Comparable<Album> {
             return this.toString().compareTo(o.toString());
         }
 
-        public Bitmap getImage() {
-            return this.image;
+        @Override
+        public boolean equals(Object o) {
+            if (o != null && o instanceof Photo) {
+                Photo other = (Photo) o;
+                return this.photoName.equals(other.photoName)
+                        || this.imagePath.equals(other.imagePath);
+            }
+            return false;
         }
 
-//        public ImageView getThumbnail() {
-//            return this.thumbnail;
-//        }
+        public Bitmap getImage(Context context) {
+            if (image == null) {
+                Uri uri = Uri.parse(imagePath);
+                context.getApplicationContext().getContentResolver().takePersistableUriPermission(uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                try {
+                    ParcelFileDescriptor parcelFileDescriptor =
+                            context.getApplicationContext().getContentResolver().openFileDescriptor(uri, "r");
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                    parcelFileDescriptor.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    image = null;
+                }
+            }
+            return image;
+        }
 
         public String toString() {
             return this.photoName;
         }
 
-        public ArrayList<Tag> getTags() {
+        public List<Tag> getTags() {
             return this.tags;
         }
 
-        public void removeTag(Tag tag) {
+        public void removeTag(Tag tag)
+                throws NoSuchElementException {
             if (!tags.contains(tag)) {
-                throw new IllegalArgumentException("The tag does not exist.");
+                throw new NoSuchElementException("The tag does not exist.");
             }
             this.tags.remove(tag);
         }
     }
+
+    static final long serialVersionUID = 18L;
+    private String albumName;
+    private HashMap<String, Photo> photos;
 
     public Album(String albumName) {
         this.albumName = albumName;
@@ -87,28 +143,28 @@ public class Album implements Serializable, Comparable<Album> {
     }
 
     public void addPhoto(Photo photo)
-            throws IllegalArgumentException {
+            throws DuplicateElementException {
         if (this.containsPhoto(photo.photoName)) {
-            throw new IllegalArgumentException("The photo is already in the album");
+            throw new DuplicateElementException("The photo is already in the album");
         }
         photos.put(photo.photoName, photo);
     }
 
-    public void addPhoto(String photoName, File imageFile)
-            throws IllegalArgumentException {
+    public void addPhoto(String photoName, String imagePath)
+            throws DuplicateElementException {
         if (photos.containsKey(photoName)) {
-            throw new IllegalArgumentException("The photo is already in the album.");
+            throw new DuplicateElementException("The photo is already in the album.");
         }
-        photos.put(photoName, new Photo(photoName, imageFile));
+        photos.put(photoName, new Photo(photoName, imagePath));
     }
 
     public void changePhotoName(String olaName, String newName)
-            throws NoSuchElementException, IllegalArgumentException {
+            throws NoSuchElementException, DuplicateElementException {
         if (!photos.containsKey(olaName)) {
             throw new NoSuchElementException("The old photo does not exist.");
         }
         if (photos.containsKey(newName)) {
-            throw new IllegalArgumentException("The new photo already exists.");
+            throw new DuplicateElementException("The new photo already exists.");
         }
         Photo photo = photos.get(olaName);
         photo.photoName = newName;
@@ -126,9 +182,9 @@ public class Album implements Serializable, Comparable<Album> {
     }
 
     public Photo getPhoto(String photoName)
-            throws IllegalArgumentException {
+            throws NoSuchElementException {
         if (!photos.containsKey(photoName)) {
-            throw new IllegalArgumentException("The photo does not exist.");
+            throw new NoSuchElementException("The photo does not exist.");
         }
         return photos.get(photoName);
     }
@@ -140,29 +196,12 @@ public class Album implements Serializable, Comparable<Album> {
         return photoList;
     }
 
-    public void loadImages() {
-        for (Photo photo : this.photos.values()) {
-            try {
-                photo.image = BitmapFactory.decodeStream(new FileInputStream(photo.imageFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println(e.getMessage());
-            }
+    public Bitmap getPreview(Context context, Comparator<Photo> comparator) {
+        if (this.photos.isEmpty()) {
+            return null;
         }
+        return this.getPhotos(comparator).get(0).getImage(context);
     }
-
-//    public void loadThumbnails() {
-//        this.photos.forEach((s, photo) -> {
-//            try {
-//                photo.thumbnail = new ImageView(new Image(new FileInputStream(photo.imageFile)));
-//                photo.thumbnail.setPreserveRatio(true);
-//                photo.thumbnail.setFitWidth(Album.THUMBNAIL_SIZE);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                System.err.println(e.getMessage());
-//            }
-//        });
-//    }
 
     public void removePhoto(String photoName)
             throws NoSuchElementException {
@@ -170,6 +209,14 @@ public class Album implements Serializable, Comparable<Album> {
             throw new NoSuchElementException("The photo does not exist");
         }
         this.photos.remove(photoName);
+    }
+
+    public void setAlbumName(String newName) {
+        this.albumName = newName;
+    }
+
+    public int size() {
+        return this.photos.size();
     }
 
     public String toString() {

@@ -5,25 +5,61 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AlbumsMainActivity">
+        <activity
+            android:name=".PhotoAlbum"
+            android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".AddAlbumActivity">
-            android:parentActivityName=".SongLib"
+            android:name=".AddEditAlbum"
+            android:label="@string/title_add_album"
+            android:parentActivityName=".PhotoAlbum">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AlbumsMainActivity" />
+                android:value=".PhotoAlbum" />
         </activity>
-
-        <activity android:name=".AddPhotoActivity"></activity>
+        <activity
+            android:name=".AddPhoto"
+            android:label="@string/title_add_photo"
+            android:parentActivityName=".PhotoAlbum">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PhotoAlbum" />
+        </activity>
+        <activity
+            android:name=".Photos"
+            android:parentActivityName=".PhotoAlbum">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PhotoAlbum" />
+        </activity>
+        <activity
+            android:name=".Slideshow"
+            android:parentActivityName=".Photos">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Photos" />
+        </activity>
+        <activity
+            android:name=".AddTag"
+            android:parentActivityName=".Slideshow">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Slideshow" />
+        </activity>
+        <activity
+            android:name=".SearchResults"
+            android:parentActivityName=".PhotoAlbum">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PhotoAlbum" />
+        </activity>
     </application>
 
 </manifest>
