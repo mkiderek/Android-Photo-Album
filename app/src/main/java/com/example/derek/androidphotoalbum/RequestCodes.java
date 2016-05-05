@@ -12,6 +12,7 @@ public class RequestCodes {
     public static final int RENAME_ALBUM_CODE = 5;
     public static final int SEARCH_PHOTO_CODE = 6;
     public static final int SHOW_ALBUM_CODE = 7;
+    public static final int SHOW_SEARCH_RESULT_CODE = 8;
 
     private RequestCodes() {}
 }

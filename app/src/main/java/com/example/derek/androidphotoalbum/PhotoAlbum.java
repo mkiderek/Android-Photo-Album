@@ -170,7 +170,7 @@ public class PhotoAlbum extends AppCompatActivity
                 type = Album.Photo.Tag.TagType.LOCATION;
             }
             Album.Photo.Tag target = new Album.Photo.Tag(type, tagValue);
-            List<Album.Photo> results = new ArrayList<>();
+            ArrayList<Album.Photo> results = new ArrayList<>();
             List<Album> albums = AlbumList.getInstance().getAlbums(null);
             for (Album album : albums) {
                 List<Album.Photo> photos = album.getPhotos(null);
@@ -183,6 +183,11 @@ public class PhotoAlbum extends AppCompatActivity
                     }
                 }
             }
+            Bundle args = new Bundle();
+            args.putSerializable(Keys.SEARCH_RESULT_KEY, results);
+            Intent intent = new Intent(this, SearchResults.class);
+            intent.putExtras(args);
+            startActivityForResult(intent, RequestCodes.SHOW_SEARCH_RESULT_CODE);
         }
     }
 
