@@ -166,7 +166,7 @@ public class PhotoAlbum extends AppCompatActivity
             Album.Photo.Tag.TagType type;
             if (tagType.equals("PERSON")) {
                 type = Album.Photo.Tag.TagType.PERSON;
-            } else if (tagType.equals("LOCATION")) {
+            } else (tagType.equals("LOCATION")) {
                 type = Album.Photo.Tag.TagType.LOCATION;
             }
             Album.Photo.Tag target = new Album.Photo.Tag(type, tagValue);
